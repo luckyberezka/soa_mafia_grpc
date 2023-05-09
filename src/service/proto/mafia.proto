@@ -1,0 +1,77 @@
+syntax = "proto3";
+
+package mafia;
+
+message EventsMonitorRequest {
+  string session_name = 1;
+  string username = 2;
+}
+
+message EventsMonitorResponse {
+  int32 format = 1;
+  string extra = 2;
+}
+
+message CommonStatusResponse {
+  bool status = 1;
+  string info = 2;
+}
+
+message CreateSessionRequest {
+  string name = 1;
+  int32  size = 2;
+  string owner = 3;
+}
+
+message JoinSessionRequest {
+  string session_name = 1;
+  string username = 2;
+}
+
+message VoteKillRequest {
+  string session_name = 1;
+  string victim = 2;
+  string username = 3;
+}
+
+message CheckRoleRequest {
+  string session_name = 1;
+  string suspect = 2;
+  string username = 3;
+}
+
+message PublishDataRequest {
+  string session_name = 1;
+  string username = 2;
+}
+
+message SwitchTimeResponse {
+  string username = 1;
+}
+
+message GetInfoRequest {
+  string session_name = 1;
+  string username = 2;
+}
+
+message GetInfoResponse {
+
+  message Player {
+    string username = 1;
+    string public_role = 2;
+  }
+
+  repeated Player user_list = 1;
+}
+
+service MafiaCtl {
+  rpc VoteKill(VoteKillRequest) returns(CommonStatusResponse) {}
+  rpc CheckRole(CheckRoleRequest) returns(CommonStatusResponse) {}
+  rpc PublishData(PublishDataRequest) returns(CommonStatusResponse) {}
+  rpc GetInfo(GetInfoRequest) returns(GetInfoResponse) {}
+  rpc SwitchTime(SwitchTimeResponse) returns(CommonStatusResponse) {}
+  rpc CreateSession(CreateSessionRequest) returns(CommonStatusResponse) {}
+  rpc JoinSession(JoinSessionRequest) returns(CommonStatusResponse) {}
+  rpc EventsMonitor(EventsMonitorRequest) returns(stream EventsMonitorResponse) {}
+}
+
