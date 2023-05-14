@@ -17,17 +17,17 @@ class MafiaCtlStub(object):
         self.VoteKill = channel.unary_unary(
                 '/mafia.MafiaCtl/VoteKill',
                 request_serializer=service_dot_proto_dot_mafia__pb2.VoteKillRequest.SerializeToString,
-                response_deserializer=service_dot_proto_dot_mafia__pb2.CommonStatusResponse.FromString,
+                response_deserializer=service_dot_proto_dot_mafia__pb2.VoteKillResponse.FromString,
                 )
         self.CheckRole = channel.unary_unary(
                 '/mafia.MafiaCtl/CheckRole',
                 request_serializer=service_dot_proto_dot_mafia__pb2.CheckRoleRequest.SerializeToString,
-                response_deserializer=service_dot_proto_dot_mafia__pb2.CommonStatusResponse.FromString,
+                response_deserializer=service_dot_proto_dot_mafia__pb2.CheckRoleResponse.FromString,
                 )
         self.PublishData = channel.unary_unary(
                 '/mafia.MafiaCtl/PublishData',
                 request_serializer=service_dot_proto_dot_mafia__pb2.PublishDataRequest.SerializeToString,
-                response_deserializer=service_dot_proto_dot_mafia__pb2.CommonStatusResponse.FromString,
+                response_deserializer=service_dot_proto_dot_mafia__pb2.PublishDataResponse.FromString,
                 )
         self.GetInfo = channel.unary_unary(
                 '/mafia.MafiaCtl/GetInfo',
@@ -36,18 +36,18 @@ class MafiaCtlStub(object):
                 )
         self.SwitchTime = channel.unary_unary(
                 '/mafia.MafiaCtl/SwitchTime',
-                request_serializer=service_dot_proto_dot_mafia__pb2.SwitchTimeResponse.SerializeToString,
-                response_deserializer=service_dot_proto_dot_mafia__pb2.CommonStatusResponse.FromString,
+                request_serializer=service_dot_proto_dot_mafia__pb2.SwitchTimeRequest.SerializeToString,
+                response_deserializer=service_dot_proto_dot_mafia__pb2.SwitchTimeResponse.FromString,
                 )
         self.CreateSession = channel.unary_unary(
                 '/mafia.MafiaCtl/CreateSession',
                 request_serializer=service_dot_proto_dot_mafia__pb2.CreateSessionRequest.SerializeToString,
-                response_deserializer=service_dot_proto_dot_mafia__pb2.CommonStatusResponse.FromString,
+                response_deserializer=service_dot_proto_dot_mafia__pb2.CreateSessionResponse.FromString,
                 )
         self.JoinSession = channel.unary_unary(
                 '/mafia.MafiaCtl/JoinSession',
                 request_serializer=service_dot_proto_dot_mafia__pb2.JoinSessionRequest.SerializeToString,
-                response_deserializer=service_dot_proto_dot_mafia__pb2.CommonStatusResponse.FromString,
+                response_deserializer=service_dot_proto_dot_mafia__pb2.JoinSessionResponse.FromString,
                 )
         self.EventsMonitor = channel.unary_stream(
                 '/mafia.MafiaCtl/EventsMonitor',
@@ -113,17 +113,17 @@ def add_MafiaCtlServicer_to_server(servicer, server):
             'VoteKill': grpc.unary_unary_rpc_method_handler(
                     servicer.VoteKill,
                     request_deserializer=service_dot_proto_dot_mafia__pb2.VoteKillRequest.FromString,
-                    response_serializer=service_dot_proto_dot_mafia__pb2.CommonStatusResponse.SerializeToString,
+                    response_serializer=service_dot_proto_dot_mafia__pb2.VoteKillResponse.SerializeToString,
             ),
             'CheckRole': grpc.unary_unary_rpc_method_handler(
                     servicer.CheckRole,
                     request_deserializer=service_dot_proto_dot_mafia__pb2.CheckRoleRequest.FromString,
-                    response_serializer=service_dot_proto_dot_mafia__pb2.CommonStatusResponse.SerializeToString,
+                    response_serializer=service_dot_proto_dot_mafia__pb2.CheckRoleResponse.SerializeToString,
             ),
             'PublishData': grpc.unary_unary_rpc_method_handler(
                     servicer.PublishData,
                     request_deserializer=service_dot_proto_dot_mafia__pb2.PublishDataRequest.FromString,
-                    response_serializer=service_dot_proto_dot_mafia__pb2.CommonStatusResponse.SerializeToString,
+                    response_serializer=service_dot_proto_dot_mafia__pb2.PublishDataResponse.SerializeToString,
             ),
             'GetInfo': grpc.unary_unary_rpc_method_handler(
                     servicer.GetInfo,
@@ -132,18 +132,18 @@ def add_MafiaCtlServicer_to_server(servicer, server):
             ),
             'SwitchTime': grpc.unary_unary_rpc_method_handler(
                     servicer.SwitchTime,
-                    request_deserializer=service_dot_proto_dot_mafia__pb2.SwitchTimeResponse.FromString,
-                    response_serializer=service_dot_proto_dot_mafia__pb2.CommonStatusResponse.SerializeToString,
+                    request_deserializer=service_dot_proto_dot_mafia__pb2.SwitchTimeRequest.FromString,
+                    response_serializer=service_dot_proto_dot_mafia__pb2.SwitchTimeResponse.SerializeToString,
             ),
             'CreateSession': grpc.unary_unary_rpc_method_handler(
                     servicer.CreateSession,
                     request_deserializer=service_dot_proto_dot_mafia__pb2.CreateSessionRequest.FromString,
-                    response_serializer=service_dot_proto_dot_mafia__pb2.CommonStatusResponse.SerializeToString,
+                    response_serializer=service_dot_proto_dot_mafia__pb2.CreateSessionResponse.SerializeToString,
             ),
             'JoinSession': grpc.unary_unary_rpc_method_handler(
                     servicer.JoinSession,
                     request_deserializer=service_dot_proto_dot_mafia__pb2.JoinSessionRequest.FromString,
-                    response_serializer=service_dot_proto_dot_mafia__pb2.CommonStatusResponse.SerializeToString,
+                    response_serializer=service_dot_proto_dot_mafia__pb2.JoinSessionResponse.SerializeToString,
             ),
             'EventsMonitor': grpc.unary_stream_rpc_method_handler(
                     servicer.EventsMonitor,
@@ -173,7 +173,7 @@ class MafiaCtl(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/mafia.MafiaCtl/VoteKill',
             service_dot_proto_dot_mafia__pb2.VoteKillRequest.SerializeToString,
-            service_dot_proto_dot_mafia__pb2.CommonStatusResponse.FromString,
+            service_dot_proto_dot_mafia__pb2.VoteKillResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -190,7 +190,7 @@ class MafiaCtl(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/mafia.MafiaCtl/CheckRole',
             service_dot_proto_dot_mafia__pb2.CheckRoleRequest.SerializeToString,
-            service_dot_proto_dot_mafia__pb2.CommonStatusResponse.FromString,
+            service_dot_proto_dot_mafia__pb2.CheckRoleResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -207,7 +207,7 @@ class MafiaCtl(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/mafia.MafiaCtl/PublishData',
             service_dot_proto_dot_mafia__pb2.PublishDataRequest.SerializeToString,
-            service_dot_proto_dot_mafia__pb2.CommonStatusResponse.FromString,
+            service_dot_proto_dot_mafia__pb2.PublishDataResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -240,8 +240,8 @@ class MafiaCtl(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/mafia.MafiaCtl/SwitchTime',
-            service_dot_proto_dot_mafia__pb2.SwitchTimeResponse.SerializeToString,
-            service_dot_proto_dot_mafia__pb2.CommonStatusResponse.FromString,
+            service_dot_proto_dot_mafia__pb2.SwitchTimeRequest.SerializeToString,
+            service_dot_proto_dot_mafia__pb2.SwitchTimeResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -258,7 +258,7 @@ class MafiaCtl(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/mafia.MafiaCtl/CreateSession',
             service_dot_proto_dot_mafia__pb2.CreateSessionRequest.SerializeToString,
-            service_dot_proto_dot_mafia__pb2.CommonStatusResponse.FromString,
+            service_dot_proto_dot_mafia__pb2.CreateSessionResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -275,7 +275,7 @@ class MafiaCtl(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/mafia.MafiaCtl/JoinSession',
             service_dot_proto_dot_mafia__pb2.JoinSessionRequest.SerializeToString,
-            service_dot_proto_dot_mafia__pb2.CommonStatusResponse.FromString,
+            service_dot_proto_dot_mafia__pb2.JoinSessionResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 

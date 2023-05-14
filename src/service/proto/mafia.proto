@@ -12,20 +12,27 @@ message EventsMonitorResponse {
   string extra = 2;
 }
 
-message CommonStatusResponse {
-  bool status = 1;
-  string info = 2;
-}
-
 message CreateSessionRequest {
   string name = 1;
   int32  size = 2;
   string owner = 3;
 }
 
+message CreateSessionResponse {
+  bool status = 1;
+  string info = 2;
+}
+
 message JoinSessionRequest {
   string session_name = 1;
   string username = 2;
+}
+
+message JoinSessionResponse {
+  bool status = 1;
+  string info = 2;
+  string role = 3;
+  map<string, string> user_list = 4;
 }
 
 message VoteKillRequest {
@@ -34,19 +41,40 @@ message VoteKillRequest {
   string username = 3;
 }
 
+message VoteKillResponse {
+  bool status = 1;
+  string info = 2;
+}
+
 message CheckRoleRequest {
   string session_name = 1;
   string suspect = 2;
   string username = 3;
 }
 
+message CheckRoleResponse {
+  string role = 1;
+}
+
 message PublishDataRequest {
+  string session_name = 1;
+  string player = 2;
+}
+
+message PublishDataResponse {
+  bool status = 1;
+  string info = 2;
+}
+
+message SwitchTimeRequest {
   string session_name = 1;
   string username = 2;
 }
 
 message SwitchTimeResponse {
-  string username = 1;
+  string role = 1;
+  bool is_end_game = 2;
+  string end_game_message = 3;
 }
 
 message GetInfoRequest {
@@ -55,23 +83,17 @@ message GetInfoRequest {
 }
 
 message GetInfoResponse {
-
-  message Player {
-    string username = 1;
-    string public_role = 2;
-  }
-
-  repeated Player user_list = 1;
+  map<string, string> user_list = 1;
 }
 
 service MafiaCtl {
-  rpc VoteKill(VoteKillRequest) returns(CommonStatusResponse) {}
-  rpc CheckRole(CheckRoleRequest) returns(CommonStatusResponse) {}
-  rpc PublishData(PublishDataRequest) returns(CommonStatusResponse) {}
+  rpc VoteKill(VoteKillRequest) returns(VoteKillResponse) {}
+  rpc CheckRole(CheckRoleRequest) returns(CheckRoleResponse) {}
+  rpc PublishData(PublishDataRequest) returns(PublishDataResponse) {}
   rpc GetInfo(GetInfoRequest) returns(GetInfoResponse) {}
-  rpc SwitchTime(SwitchTimeResponse) returns(CommonStatusResponse) {}
-  rpc CreateSession(CreateSessionRequest) returns(CommonStatusResponse) {}
-  rpc JoinSession(JoinSessionRequest) returns(CommonStatusResponse) {}
+  rpc SwitchTime(SwitchTimeRequest) returns(SwitchTimeResponse) {}
+  rpc CreateSession(CreateSessionRequest) returns(CreateSessionResponse) {}
+  rpc JoinSession(JoinSessionRequest) returns(JoinSessionResponse) {}
   rpc EventsMonitor(EventsMonitorRequest) returns(stream EventsMonitorResponse) {}
 }
 
