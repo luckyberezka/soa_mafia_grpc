@@ -20,6 +20,7 @@ NIGHT = "Night"
 INFO = 0
 JOIN = 1
 KILL = 2
+END = 3
 
 
 # ACTIONS

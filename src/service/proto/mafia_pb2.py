@@ -13,7 +13,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x19service/proto/mafia.proto\x12\x05mafia\">\n\x14\x45ventsMonitorRequest\x12\x14\n\x0csession_name\x18\x01 \x01(\t\x12\x10\n\x08username\x18\x02 \x01(\t\"6\n\x15\x45ventsMonitorResponse\x12\x0e\n\x06\x66ormat\x18\x01 \x01(\x05\x12\r\n\x05\x65xtra\x18\x02 \x01(\t\"A\n\x14\x43reateSessionRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x0c\n\x04size\x18\x02 \x01(\x05\x12\r\n\x05owner\x18\x03 \x01(\t\"5\n\x15\x43reateSessionResponse\x12\x0e\n\x06status\x18\x01 \x01(\x08\x12\x0c\n\x04info\x18\x02 \x01(\t\"<\n\x12JoinSessionRequest\x12\x14\n\x0csession_name\x18\x01 \x01(\t\x12\x10\n\x08username\x18\x02 \x01(\t\"\xaf\x01\n\x13JoinSessionResponse\x12\x0e\n\x06status\x18\x01 \x01(\x08\x12\x0c\n\x04info\x18\x02 \x01(\t\x12\x0c\n\x04role\x18\x03 \x01(\t\x12;\n\tuser_list\x18\x04 \x03(\x0b\x32(.mafia.JoinSessionResponse.UserListEntry\x1a/\n\rUserListEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"I\n\x0fVoteKillRequest\x12\x14\n\x0csession_name\x18\x01 \x01(\t\x12\x0e\n\x06victim\x18\x02 \x01(\t\x12\x10\n\x08username\x18\x03 \x01(\t\"0\n\x10VoteKillResponse\x12\x0e\n\x06status\x18\x01 \x01(\x08\x12\x0c\n\x04info\x18\x02 \x01(\t\"K\n\x10\x43heckRoleRequest\x12\x14\n\x0csession_name\x18\x01 \x01(\t\x12\x0f\n\x07suspect\x18\x02 \x01(\t\x12\x10\n\x08username\x18\x03 \x01(\t\"!\n\x11\x43heckRoleResponse\x12\x0c\n\x04role\x18\x01 \x01(\t\":\n\x12PublishDataRequest\x12\x14\n\x0csession_name\x18\x01 \x01(\t\x12\x0e\n\x06player\x18\x02 \x01(\t\"3\n\x13PublishDataResponse\x12\x0e\n\x06status\x18\x01 \x01(\x08\x12\x0c\n\x04info\x18\x02 \x01(\t\";\n\x11SwitchTimeRequest\x12\x14\n\x0csession_name\x18\x01 \x01(\t\x12\x10\n\x08username\x18\x02 \x01(\t\"Q\n\x12SwitchTimeResponse\x12\x0c\n\x04role\x18\x01 \x01(\t\x12\x13\n\x0bis_end_game\x18\x02 \x01(\x08\x12\x18\n\x10\x65nd_game_message\x18\x03 \x01(\t\"8\n\x0eGetInfoRequest\x12\x14\n\x0csession_name\x18\x01 \x01(\t\x12\x10\n\x08username\x18\x02 \x01(\t\"{\n\x0fGetInfoResponse\x12\x37\n\tuser_list\x18\x01 \x03(\x0b\x32$.mafia.GetInfoResponse.UserListEntry\x1a/\n\rUserListEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\x32\xba\x04\n\x08MafiaCtl\x12=\n\x08VoteKill\x12\x16.mafia.VoteKillRequest\x1a\x17.mafia.VoteKillResponse\"\x00\x12@\n\tCheckRole\x12\x17.mafia.CheckRoleRequest\x1a\x18.mafia.CheckRoleResponse\"\x00\x12\x46\n\x0bPublishData\x12\x19.mafia.PublishDataRequest\x1a\x1a.mafia.PublishDataResponse\"\x00\x12:\n\x07GetInfo\x12\x15.mafia.GetInfoRequest\x1a\x16.mafia.GetInfoResponse\"\x00\x12\x43\n\nSwitchTime\x12\x18.mafia.SwitchTimeRequest\x1a\x19.mafia.SwitchTimeResponse\"\x00\x12L\n\rCreateSession\x12\x1b.mafia.CreateSessionRequest\x1a\x1c.mafia.CreateSessionResponse\"\x00\x12\x46\n\x0bJoinSession\x12\x19.mafia.JoinSessionRequest\x1a\x1a.mafia.JoinSessionResponse\"\x00\x12N\n\rEventsMonitor\x12\x1b.mafia.EventsMonitorRequest\x1a\x1c.mafia.EventsMonitorResponse\"\x00\x30\x01\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x19service/proto/mafia.proto\x12\x05mafia\">\n\x14\x45ventsMonitorRequest\x12\x14\n\x0csession_name\x18\x01 \x01(\t\x12\x10\n\x08username\x18\x02 \x01(\t\"6\n\x15\x45ventsMonitorResponse\x12\x0e\n\x06\x66ormat\x18\x01 \x01(\x05\x12\r\n\x05\x65xtra\x18\x02 \x01(\t\"A\n\x14\x43reateSessionRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x0c\n\x04size\x18\x02 \x01(\x05\x12\r\n\x05owner\x18\x03 \x01(\t\"5\n\x15\x43reateSessionResponse\x12\x0e\n\x06status\x18\x01 \x01(\x08\x12\x0c\n\x04info\x18\x02 \x01(\t\"<\n\x12JoinSessionRequest\x12\x14\n\x0csession_name\x18\x01 \x01(\t\x12\x10\n\x08username\x18\x02 \x01(\t\"\xaf\x01\n\x13JoinSessionResponse\x12\x0e\n\x06status\x18\x01 \x01(\x08\x12\x0c\n\x04info\x18\x02 \x01(\t\x12\x0c\n\x04role\x18\x03 \x01(\t\x12;\n\tuser_list\x18\x04 \x03(\x0b\x32(.mafia.JoinSessionResponse.UserListEntry\x1a/\n\rUserListEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"I\n\x0fVoteKillRequest\x12\x14\n\x0csession_name\x18\x01 \x01(\t\x12\x0e\n\x06victim\x18\x02 \x01(\t\x12\x10\n\x08username\x18\x03 \x01(\t\"0\n\x10VoteKillResponse\x12\x0e\n\x06status\x18\x01 \x01(\x08\x12\x0c\n\x04info\x18\x02 \x01(\t\"K\n\x10\x43heckRoleRequest\x12\x14\n\x0csession_name\x18\x01 \x01(\t\x12\x0f\n\x07suspect\x18\x02 \x01(\t\x12\x10\n\x08username\x18\x03 \x01(\t\"!\n\x11\x43heckRoleResponse\x12\x0c\n\x04role\x18\x01 \x01(\t\":\n\x12PublishDataRequest\x12\x14\n\x0csession_name\x18\x01 \x01(\t\x12\x0e\n\x06player\x18\x02 \x01(\t\"3\n\x13PublishDataResponse\x12\x0e\n\x06status\x18\x01 \x01(\x08\x12\x0c\n\x04info\x18\x02 \x01(\t\";\n\x11SwitchTimeRequest\x12\x14\n\x0csession_name\x18\x01 \x01(\t\x12\x10\n\x08username\x18\x02 \x01(\t\"\xbe\x01\n\x12SwitchTimeResponse\x12\x0c\n\x04role\x18\x01 \x01(\t\x12\x13\n\x0bis_end_game\x18\x02 \x01(\x08\x12\x18\n\x10\x65nd_game_message\x18\x03 \x01(\t\x12:\n\tuser_list\x18\x04 \x03(\x0b\x32\'.mafia.SwitchTimeResponse.UserListEntry\x1a/\n\rUserListEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"8\n\x0eGetInfoRequest\x12\x14\n\x0csession_name\x18\x01 \x01(\t\x12\x10\n\x08username\x18\x02 \x01(\t\"{\n\x0fGetInfoResponse\x12\x37\n\tuser_list\x18\x01 \x03(\x0b\x32$.mafia.GetInfoResponse.UserListEntry\x1a/\n\rUserListEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\x32\xba\x04\n\x08MafiaCtl\x12=\n\x08VoteKill\x12\x16.mafia.VoteKillRequest\x1a\x17.mafia.VoteKillResponse\"\x00\x12@\n\tCheckRole\x12\x17.mafia.CheckRoleRequest\x1a\x18.mafia.CheckRoleResponse\"\x00\x12\x46\n\x0bPublishData\x12\x19.mafia.PublishDataRequest\x1a\x1a.mafia.PublishDataResponse\"\x00\x12:\n\x07GetInfo\x12\x15.mafia.GetInfoRequest\x1a\x16.mafia.GetInfoResponse\"\x00\x12\x43\n\nSwitchTime\x12\x18.mafia.SwitchTimeRequest\x1a\x19.mafia.SwitchTimeResponse\"\x00\x12L\n\rCreateSession\x12\x1b.mafia.CreateSessionRequest\x1a\x1c.mafia.CreateSessionResponse\"\x00\x12\x46\n\x0bJoinSession\x12\x19.mafia.JoinSessionRequest\x1a\x1a.mafia.JoinSessionResponse\"\x00\x12N\n\rEventsMonitor\x12\x1b.mafia.EventsMonitorRequest\x1a\x1c.mafia.EventsMonitorResponse\"\x00\x30\x01\x62\x06proto3')
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'service.proto.mafia_pb2', globals())
@@ -22,6 +22,8 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   DESCRIPTOR._options = None
   _JOINSESSIONRESPONSE_USERLISTENTRY._options = None
   _JOINSESSIONRESPONSE_USERLISTENTRY._serialized_options = b'8\001'
+  _SWITCHTIMERESPONSE_USERLISTENTRY._options = None
+  _SWITCHTIMERESPONSE_USERLISTENTRY._serialized_options = b'8\001'
   _GETINFORESPONSE_USERLISTENTRY._options = None
   _GETINFORESPONSE_USERLISTENTRY._serialized_options = b'8\001'
   _EVENTSMONITORREQUEST._serialized_start=36
@@ -52,14 +54,16 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   _PUBLISHDATARESPONSE._serialized_end=866
   _SWITCHTIMEREQUEST._serialized_start=868
   _SWITCHTIMEREQUEST._serialized_end=927
-  _SWITCHTIMERESPONSE._serialized_start=929
-  _SWITCHTIMERESPONSE._serialized_end=1010
-  _GETINFOREQUEST._serialized_start=1012
-  _GETINFOREQUEST._serialized_end=1068
-  _GETINFORESPONSE._serialized_start=1070
-  _GETINFORESPONSE._serialized_end=1193
+  _SWITCHTIMERESPONSE._serialized_start=930
+  _SWITCHTIMERESPONSE._serialized_end=1120
+  _SWITCHTIMERESPONSE_USERLISTENTRY._serialized_start=469
+  _SWITCHTIMERESPONSE_USERLISTENTRY._serialized_end=516
+  _GETINFOREQUEST._serialized_start=1122
+  _GETINFOREQUEST._serialized_end=1178
+  _GETINFORESPONSE._serialized_start=1180
+  _GETINFORESPONSE._serialized_end=1303
   _GETINFORESPONSE_USERLISTENTRY._serialized_start=469
   _GETINFORESPONSE_USERLISTENTRY._serialized_end=516
-  _MAFIACTL._serialized_start=1196
-  _MAFIACTL._serialized_end=1766
+  _MAFIACTL._serialized_start=1306
+  _MAFIACTL._serialized_end=1876
 # @@protoc_insertion_point(module_scope)

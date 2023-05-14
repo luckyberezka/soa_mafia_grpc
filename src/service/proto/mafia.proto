@@ -75,6 +75,7 @@ message SwitchTimeResponse {
   string role = 1;
   bool is_end_game = 2;
   string end_game_message = 3;
+  map<string, string> user_list = 4;
 }
 
 message GetInfoRequest {

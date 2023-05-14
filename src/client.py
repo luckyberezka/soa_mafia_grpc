@@ -145,33 +145,37 @@ async def gameplay(game_ctl):
                 if action == END_NIGHT:
                     break
 
+
         response = await game_ctl.stub.SwitchTime(
             mafia_pb2.SwitchTimeRequest(session_name=game_ctl.session_name, username=game_ctl.username))
 
         await asyncio.sleep(10)
+
+        if response.is_end_game:
+            print(response.end_game_message)
+            await game_ctl.channel.close()
+            exit(0)
 
         if response.role == SPIRIT_ROLE:
             print("You have been executed :(")
             input("Press Enter key to choose an action...")
             action, _ = pick(SPIRIT_ACTIONS, 'Choose an action: ', indicator='[x]', default_index=0)
             if action == EXIT:
-                game_ctl.channel.close()
+                await game_ctl.channel.close()
                 exit(0)
+            if action == SUSPEND:
+                game_ctl.role = SPIRIT_ROLE
             break
         else:
             print("{} has passed, you're still alive :)".format(game_ctl.time_of_day))
 
-        if response.is_end_game:
-            print(response.end_game_message)
-            game_ctl.channel.close()
-            exit(0)
+        game_ctl.user_list = response.user_list
 
         if game_ctl.time_of_day == DAY:
-            print("The city falls asleep, the mafia wakes up...")
             game_ctl.time_of_day = NIGHT
         else:
-            print("The city wakes up...")
             game_ctl.time_of_day = DAY
+
         first_day_flag = False
         game_ctl.publish_info = list()
 
@@ -188,20 +192,26 @@ async def message_handler(game_ctl):
         elif message.format == KILL:
             game_ctl.user_list[message.extra] = SPIRIT_ROLE
             print("{} was executed".format(message.extra))
-
+        elif message.format == END and game_ctl.role == SPIRIT_ROLE:
+            print(message.extra)
+            await game_ctl.channel.close()
+            exit(0)
 
 async def run() -> None:
-    channel = grpc.aio.insecure_channel('{}:{}'.format(HOST, PORT))
-    stub = mafia_pb2_grpc.MafiaCtlStub(channel)
+    try:
+        channel = grpc.aio.insecure_channel('{}:{}'.format(HOST, PORT))
+        stub = mafia_pb2_grpc.MafiaCtlStub(channel)
 
-    game_ctl = GameCtl(stub, channel)
-    await game_ctl.start()
+        game_ctl = GameCtl(stub, channel)
+        await game_ctl.start()
 
-    # main logic
-    await asyncio.gather(
-        gameplay(game_ctl),
-        message_handler(game_ctl)
-    )
+        # main logic
+        await asyncio.gather(
+            gameplay(game_ctl),
+            message_handler(game_ctl)
+        )
+    except SystemExit:
+        pass
 
 
 if __name__ == '__main__':

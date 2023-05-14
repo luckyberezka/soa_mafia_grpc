@@ -136,6 +136,17 @@ class MafiaServer(mafia_pb2_grpc.MafiaCtlServicer):
         if current_session.sync_counter == current_session.still_alive:
             current_session.sync_counter = 0
             async with current_session.sync_point:
+                if len(current_session.publish_info) != 0:
+                    publish_user = current_session.publish_info[0]
+                    publish_role = current_session.internal_roles[publish_user]
+                    current_session.external_roles[publish_user] = publish_role
+                    current_session.message_queue.append(mafia_pb2.EventsMonitorResponse(format=INFO,
+                                                                                         extra="The officer found out: {} is {}!".format(
+                                                                                             publish_user,
+                                                                                             publish_role)))
+                    current_session.publish_info = list()
+
+
                 new_spirit = None
                 new_spirit_role = None
                 max_votes = 0
@@ -144,6 +155,8 @@ class MafiaServer(mafia_pb2_grpc.MafiaCtlServicer):
                     if votes_number > max_votes:
                         max_votes = votes_number
                         new_spirit = username
+
+                current_session.votekill = defaultdict(int)
 
                 if new_spirit:
                     new_spirit_role = current_session.internal_roles[new_spirit]
@@ -159,7 +172,15 @@ class MafiaServer(mafia_pb2_grpc.MafiaCtlServicer):
                     current_session.external_roles[new_spirit] = SPIRIT_ROLE
                     current_session.still_alive -= 1
 
-                current_session.time_of_day = NIGHT if current_session.time_of_day == DAY else DAY
+
+                if current_session.time_of_day == DAY:
+                    current_session.message_queue.append(mafia_pb2.EventsMonitorResponse(format=INFO,
+                                                                                         extra="The city falls asleep, the mafia wakes up..."))
+                    current_session.time_of_day = NIGHT
+                else:
+                    current_session.message_queue.append(mafia_pb2.EventsMonitorResponse(format=INFO,
+                                                                                         extra="The city wakes up..."))
+                    current_session.time_of_day = DAY
 
                 current_session.sync_point.notify_all()
 
@@ -169,15 +190,7 @@ class MafiaServer(mafia_pb2_grpc.MafiaCtlServicer):
                 else:
                     current_session.message_queue.append(mafia_pb2.EventsMonitorResponse(format=INFO,
                                                                                          extra="No one was killed"))
-                if len(current_session.publish_info) != 0:
-                    publish_user = current_session.publish_info[0]
-                    publish_role = current_session.internal_roles[publish_user]
-                    current_session.external_roles[publish_user] = publish_role
-                    current_session.message_queue.append(mafia_pb2.EventsMonitorResponse(format=INFO,
-                                                                                         extra="The officer found out: {} is {}!".format(
-                                                                                             publish_user,
-                                                                                             publish_role)))
-                    current_session.publish_info = list()
+
         else:
             async with current_session.sync_point:
                 await current_session.sync_point.wait()
@@ -187,13 +200,20 @@ class MafiaServer(mafia_pb2_grpc.MafiaCtlServicer):
         if current_session.mafia_number == 0:
             is_end_game = True
             end_game_message = "Game over, civilians win!"
+            current_session.message_queue.append(mafia_pb2.EventsMonitorResponse(format=END,
+                                                                                 extra=end_game_message))
         elif current_session.mafia_number == current_session.civilian_number:
             is_end_game = True
             end_game_message = "Game over, mafia win!"
+            current_session.message_queue.append(mafia_pb2.EventsMonitorResponse(format=END,
+                                                                                 extra=end_game_message))
 
 
 
-        return mafia_pb2.SwitchTimeResponse(role=current_session.internal_roles[request.username],is_end_game=is_end_game,end_game_message=end_game_message)
+        return mafia_pb2.SwitchTimeResponse(role=current_session.internal_roles[request.username],
+                                            is_end_game=is_end_game,
+                                            end_game_message=end_game_message,
+                                            user_list=current_session.external_roles)
 
     async def VoteKill(self, request, context):
         """
@@ -211,7 +231,7 @@ class MafiaServer(mafia_pb2_grpc.MafiaCtlServicer):
         :param context: grpc.aio.ServicerContext
         :return: mafia_pb2.CommonStatusResponse
         """
-        return mafia_pb2.SwitchTimeResponse(role=self.sessions[request.session_name].internal_roles[request.suspect])
+        return mafia_pb2.CheckRoleResponse(role=self.sessions[request.session_name].internal_roles[request.suspect])
 
     async def PublishData(self, request, context):
         """
