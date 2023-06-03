@@ -85,7 +85,7 @@ async def gameplay(game_ctl):
                     vote_list = list()
                     for username, role in game_ctl.user_list.items():
                         if role != SPIRIT_ROLE and username != game_ctl.username:
-                            if game_ctl.role == MAFIA_ROLE and role != MAFIA_ROLE:
+                            if game_ctl.role == MAFIA_ROLE and role != MAFIA_ROLE or game_ctl.role != MAFIA_ROLE:
                                 vote_list.append(username)
 
                     if len(vote_list) <= 1:
@@ -107,14 +107,18 @@ async def gameplay(game_ctl):
                     vote_list = list()
                     for username, role in game_ctl.user_list.items():
                         if role != SPIRIT_ROLE and username != game_ctl.username:
-                            if game_ctl.role == MAFIA_ROLE and role != MAFIA_ROLE:
+                            if game_ctl.role == MAFIA_ROLE and role != MAFIA_ROLE or game_ctl.role != MAFIA_ROLE:
                                 vote_list.append(username)
 
-                    victim, index = pick(vote_list, 'Choose a player to execute: ', indicator='[x]', default_index=0)
-                    await game_ctl.stub.VoteKill(mafia_pb2.VoteKillRequest(session_name=game_ctl.session_name,
-                                                                           victim=victim,
-                                                                           username=game_ctl.username))
-                    print("You voted for the execution of {}".format(victim))
+                    if len(vote_list) != 0:
+                        victim, index = pick(vote_list, 'Choose a player to execute: ', indicator='[x]',
+                                             default_index=0)
+                        await game_ctl.stub.VoteKill(mafia_pb2.VoteKillRequest(session_name=game_ctl.session_name,
+                                                                               victim=victim,
+                                                                               username=game_ctl.username))
+                        print("You voted for the execution of {}".format(victim))
+                    else:
+                        print("List of players for execution is empty!")
                 if action == GET_INFO:
                     response = await game_ctl.stub.GetInfo(mafia_pb2.GetInfoRequest(session_name=game_ctl.session_name,
                                                                               username=game_ctl.username))
@@ -174,12 +178,16 @@ async def gameplay(game_ctl):
                         if role != SPIRIT_ROLE and username != game_ctl.username:
                             vote_list.append(username)
 
-                    victim, index = pick(vote_list, 'Choose a player to execute: ', indicator='[x]',
-                                         default_index=0)
-                    await game_ctl.stub.VoteKill(mafia_pb2.VoteKillRequest(session_name=game_ctl.session_name,
-                                                                           victim=victim,
-                                                                           username=game_ctl.username))
-                    print("You voted for the execution of {}".format(victim))
+                    if len(vote_list) != 0:
+                        victim, index = pick(vote_list, 'Choose a player to execute: ', indicator='[x]',
+                                             default_index=0)
+                        await game_ctl.stub.VoteKill(mafia_pb2.VoteKillRequest(session_name=game_ctl.session_name,
+                                                                               victim=victim,
+                                                                               username=game_ctl.username))
+                        print("You voted for the execution of {}".format(victim))
+                    else:
+                        print("List of players for execution is empty!")
+
                 if action == CHECK_ROLE:
                     action_list.remove(CHECK_ROLE)
                     action_list.append(PUBLISH_DATA)
@@ -188,13 +196,18 @@ async def gameplay(game_ctl):
                         if role != SPIRIT_ROLE and username != game_ctl.username:
                             vote_list.append(username)
 
-                    suspect, index = pick(vote_list, 'Choose a player to execute: ', indicator='[x]',
-                                         default_index=0)
-                    response = await game_ctl.stub.CheckRole(mafia_pb2.CheckRoleRequest(session_name=game_ctl.session_name,
-                                                                                        suspect=suspect,
-                                                                                        username=game_ctl.username))
-                    print("{} is {}!".format(suspect, response.role))
-                    game_ctl.publish_info.append(suspect)
+                    if len(vote_list) != 0:
+                        suspect, index = pick(vote_list, 'Choose a player to execute: ', indicator='[x]',
+                                              default_index=0)
+                        response = await game_ctl.stub.CheckRole(
+                            mafia_pb2.CheckRoleRequest(session_name=game_ctl.session_name,
+                                                       suspect=suspect,
+                                                       username=game_ctl.username))
+                        print("{} is {}!".format(suspect, response.role))
+                        game_ctl.publish_info.append(suspect)
+                    else:
+                        print("List ti check the roles is empty!")
+
                 if action == PUBLISH_DATA:
                     response = await game_ctl.stub.PublishData(mafia_pb2.PublishDataRequest(session_name=game_ctl.session_name,
                                                                                             player=game_ctl.publish_info[0]))

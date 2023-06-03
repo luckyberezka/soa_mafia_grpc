@@ -203,11 +203,13 @@ class MafiaServer(mafia_pb2_grpc.MafiaCtlServicer):
             end_game_message = "Game over, civilians win!"
             current_session.message_queue.append(mafia_pb2.EventsMonitorResponse(format=END,
                                                                                  extra=end_game_message))
+            print(current_session.mafia_number, current_session.civilian_number)
         elif current_session.mafia_number == current_session.civilian_number:
             is_end_game = True
             end_game_message = "Game over, mafia win!"
             current_session.message_queue.append(mafia_pb2.EventsMonitorResponse(format=END,
                                                                                  extra=end_game_message))
+            print(current_session.mafia_number, current_session.civilian_number)
 
 
 
