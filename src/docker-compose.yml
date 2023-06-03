@@ -1,0 +1,10 @@
+version: "3"
+services:
+  server:
+    image: nardzhiev/mafia_server
+    hostname: MAFIA
+    ports:
+      - "8080:8080/tcp"
+    environment:
+      - HOST=0.0.0.0
+      - PORT=8080

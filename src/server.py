@@ -2,6 +2,7 @@ import grpc
 import asyncio
 import service.proto.mafia_pb2 as mafia_pb2
 import service.proto.mafia_pb2_grpc as mafia_pb2_grpc
+import os
 
 from random import randint
 from defines import *
@@ -260,9 +261,10 @@ async def serve(host, port) -> None:
     mafia_pb2_grpc.add_MafiaCtlServicer_to_server(MafiaServer(), server)
     listen_addr = "{}:{}".format(host, port)
     server.add_insecure_port(listen_addr)
+    print("Running server...")
     await server.start()
     await server.wait_for_termination()
 
 
 if __name__ == '__main__':
-    asyncio.run(serve(HOST, PORT))
+    asyncio.run(serve(os.environ['HOST'], os.environ['PORT']))
