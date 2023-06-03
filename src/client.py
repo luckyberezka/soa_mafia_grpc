@@ -7,6 +7,7 @@ import service.proto.mafia_pb2_grpc as mafia_pb2_grpc
 from defines import *
 
 from copy import deepcopy
+from random import randint
 
 
 class GameCtl:
@@ -58,13 +59,16 @@ class GameCtl:
                 print("Trying to join, waiting for users...")
                 if not await self.join_to_session():
                     continue
-                print("You successfully joined to {}".format(self.session_name))
                 break
 
 
 async def gameplay(game_ctl):
-    await asyncio.sleep(10)
+    await asyncio.sleep(3)
     print("Your role: {}".format(game_ctl.role))
+
+    game_mode, index = pick(GAME_MODE_LIST, "Choose game mode: ", indicator='[x]',
+                         default_index=0)
+
     first_day_flag = True
 
     while True:
@@ -75,6 +79,26 @@ async def gameplay(game_ctl):
                 action_list = deepcopy(DAY_ACTIONS)
 
             while True:
+                if game_mode == AUTOMATIC:
+                    if first_day_flag:
+                        break
+                    vote_list = list()
+                    for username, role in game_ctl.user_list.items():
+                        if role != SPIRIT_ROLE and username != game_ctl.username:
+                            if game_ctl.role == MAFIA_ROLE and role != MAFIA_ROLE:
+                                vote_list.append(username)
+
+                    if len(vote_list) <= 1:
+                        break
+
+                    victim = vote_list[randint(0, len(vote_list) - 1)]
+
+                    await game_ctl.stub.VoteKill(mafia_pb2.VoteKillRequest(session_name=game_ctl.session_name,
+                                                                           victim=victim,
+                                                                           username=game_ctl.username))
+                    print("You voted for the execution of {}".format(victim))
+                    break
+
                 input("Press Enter key to choose an action...")
 
                 action, _ = pick(action_list, 'Choose an action: ', indicator='[x]', default_index=0)
@@ -83,7 +107,8 @@ async def gameplay(game_ctl):
                     vote_list = list()
                     for username, role in game_ctl.user_list.items():
                         if role != SPIRIT_ROLE and username != game_ctl.username:
-                            vote_list.append(username)
+                            if game_ctl.role == MAFIA_ROLE and role != MAFIA_ROLE:
+                                vote_list.append(username)
 
                     victim, index = pick(vote_list, 'Choose a player to execute: ', indicator='[x]', default_index=0)
                     await game_ctl.stub.VoteKill(mafia_pb2.VoteKillRequest(session_name=game_ctl.session_name,
@@ -104,6 +129,42 @@ async def gameplay(game_ctl):
             elif game_ctl.role == OFFICER_ROLE:
                 action_list = deepcopy(NIGHT_OFFICER_ACTIONS)
             while True:
+                if game_mode == AUTOMATIC and game_ctl.role == MAFIA_ROLE:
+                    vote_list = list()
+                    for username, role in game_ctl.user_list.items():
+                        if role != SPIRIT_ROLE and username != game_ctl.username:
+                            if game_ctl.role == MAFIA_ROLE and role != MAFIA_ROLE:
+                                vote_list.append(username)
+
+                    if len(vote_list) <= 1:
+                        break
+                    victim = vote_list[randint(0, len(vote_list) - 1)]
+
+                    await game_ctl.stub.VoteKill(mafia_pb2.VoteKillRequest(session_name=game_ctl.session_name,
+                                                                           victim=victim,
+                                                                           username=game_ctl.username))
+                    print("You voted for the execution of {}".format(victim))
+                    break
+
+                if game_mode == AUTOMATIC and game_ctl.role == OFFICER_ROLE:
+                    vote_list = list()
+                    for username, role in game_ctl.user_list.items():
+                        if role != SPIRIT_ROLE and username != game_ctl.username:
+                            vote_list.append(username)
+                    if len(vote_list) <= 1:
+                        break
+                    suspect = vote_list[randint(0, len(vote_list) - 1)]
+                    response = await game_ctl.stub.CheckRole(
+                        mafia_pb2.CheckRoleRequest(session_name=game_ctl.session_name,
+                                                   suspect=suspect,
+                                                   username=game_ctl.username))
+                    print("You recognized {}'s role!, {} is {}!".format(suspect, suspect, response.role))
+                    game_ctl.publish_info.append(suspect)
+                    response = await game_ctl.stub.PublishData(
+                        mafia_pb2.PublishDataRequest(session_name=game_ctl.session_name,
+                                                     player=game_ctl.publish_info[0]))
+                    break
+
                 input("Press Enter key to choose an action...")
                 action, _ = pick(action_list, 'Choose an action: ', indicator='[x]', default_index=0)
                 if action == VOTEKILL:
@@ -145,7 +206,6 @@ async def gameplay(game_ctl):
                 if action == END_NIGHT:
                     break
 
-
         response = await game_ctl.stub.SwitchTime(
             mafia_pb2.SwitchTimeRequest(session_name=game_ctl.session_name, username=game_ctl.username))
 
@@ -158,7 +218,11 @@ async def gameplay(game_ctl):
 
         if response.role == SPIRIT_ROLE:
             print("You have been executed :(")
+            if game_mode == AUTOMATIC:
+                await game_ctl.channel.close()
+                exit(0)
             input("Press Enter key to choose an action...")
+
             action, _ = pick(SPIRIT_ACTIONS, 'Choose an action: ', indicator='[x]', default_index=0)
             if action == EXIT:
                 await game_ctl.channel.close()

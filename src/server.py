@@ -66,6 +66,7 @@ class MafiaServer(mafia_pb2_grpc.MafiaCtlServicer):
             return mafia_pb2.CreateSessionResponse(status=False, info="Session size is too small\n")
         self.sessions[request.name] = GameSession(request.name, request.size, request.owner)
         print("Session {} created".format(request.name))
+        self.sessions[request.name].message_queue.append(mafia_pb2.EventsMonitorResponse(format=INFO, extra="You successfully joined to {}".format(request.name)))
         return mafia_pb2.CreateSessionResponse(status=True, info="Session was successfully created\n")
 
     async def JoinSession(self, request, context):
