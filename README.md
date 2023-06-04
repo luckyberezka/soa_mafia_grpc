@@ -13,7 +13,9 @@ docker-compose up
 ```
 
 # Запуск клиента
+Заходмс в soa_mafia_grpc/src  и устанавливает нужные пакты для клиента, запускаем клиента:
 
 ```
+pip install -r requirements.txt
 python3 client.py
 ```
