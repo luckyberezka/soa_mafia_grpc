@@ -1,5 +1,7 @@
 import grpc
 import asyncio
+import pika
+import aio_pika
 from pick import pick
 import service.proto.mafia_pb2 as mafia_pb2
 import service.proto.mafia_pb2_grpc as mafia_pb2_grpc
@@ -20,6 +22,7 @@ class GameCtl:
         self.time_of_day = DAY
         self.user_list = dict()
         self.publish_info = list()
+        self.chat = None
 
     async def join_to_session(self):
         response = await self.stub.JoinSession(
@@ -60,6 +63,8 @@ class GameCtl:
                 if not await self.join_to_session():
                     continue
                 break
+
+
 
 
 async def gameplay(game_ctl):
@@ -124,6 +129,14 @@ async def gameplay(game_ctl):
                                                                               username=game_ctl.username))
                     for username, role in response.user_list.items():
                         print("Player: {}, Role: {}".format(username, role))
+                if action == SEND_MESSAGE:
+                    print("Enter your message:")
+                    message = input()
+                    message = "{}: {}".format(game_ctl.username, message)
+                    await game_ctl.chat.default_exchange.publish(
+                        aio_pika.Message(body=message.encode()),
+                        routing_key=game_ctl.session_name,
+                    )
                 if action == END_DAY:
                     break
         elif game_ctl.time_of_day == NIGHT and game_ctl.role != CIVILIAN_ROLE:
@@ -216,6 +229,14 @@ async def gameplay(game_ctl):
                                                                               username=game_ctl.username))
                     for username, role in response.user_list.items():
                         print("Player: {}, Role: {}".format(username, role))
+                if action == SEND_MESSAGE:
+                    print("Enter your message:")
+                    message = input()
+                    message = "{}: {}".format(game_ctl.username, message)
+                    await game_ctl.chat.default_exchange.publish(
+                        aio_pika.Message(body=message.encode()),
+                        routing_key=game_ctl.session_name,
+                    )
                 if action == END_NIGHT:
                     break
 
@@ -225,11 +246,13 @@ async def gameplay(game_ctl):
         await asyncio.sleep(10)
 
         if response.is_end_game:
+            await game_ctl.chat.close()
             print(response.end_game_message)
             await game_ctl.channel.close()
             exit(0)
 
         if response.role == SPIRIT_ROLE:
+            await game_ctl.chat.close()
             print("You have been executed :(")
             if game_mode == AUTOMATIC:
                 await game_ctl.channel.close()
@@ -257,7 +280,6 @@ async def gameplay(game_ctl):
         game_ctl.publish_info = list()
 
 
-
 async def message_handler(game_ctl):
     async for message in game_ctl.stub.EventsMonitor(
             mafia_pb2.EventsMonitorRequest(session_name=game_ctl.session_name, username=game_ctl.username)
@@ -274,6 +296,26 @@ async def message_handler(game_ctl):
             await game_ctl.channel.close()
             exit(0)
 
+
+async def chatter(game_ctl: GameCtl):
+    connection = await aio_pika.connect_robust(host='localhost', port=5672)
+    queue_name = game_ctl.session_name
+
+    # Creating channel
+    game_ctl.chat = await connection.channel()
+
+    # Will take no more than 10 messages in advance
+    await game_ctl.chat.set_qos(prefetch_count=100)
+
+    # Declaring queue
+    queue = await game_ctl.chat.declare_queue(queue_name, auto_delete=False, exclusive=False)
+
+    async with queue.iterator() as queue_iter:
+        async for message in queue_iter:
+            async with message.process():
+                print(message.body.decode())
+
+
 async def run() -> None:
     try:
         channel = grpc.aio.insecure_channel('{}:{}'.format(HOST, PORT))
@@ -285,7 +327,8 @@ async def run() -> None:
         # main logic
         await asyncio.gather(
             gameplay(game_ctl),
-            message_handler(game_ctl)
+            message_handler(game_ctl),
+            chatter(game_ctl),
         )
     except SystemExit:
         pass
